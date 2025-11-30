@@ -25,10 +25,10 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       _isLoading = true;
     });
 
-    // 실제로는 서버에서 결제 내역을 가져오지만, 
+    // 실제로는 서버에서 결제 내역을 가져오지만,
     // 여기서는 시뮬레이션 데이터를 사용
     await Future.delayed(const Duration(seconds: 1));
-    
+
     setState(() {
       _paymentHistory = [
         {
@@ -129,24 +129,20 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
         foregroundColor: Colors.white,
       ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: Colors.orange,
-              ),
-            )
+          ? const Center(child: CircularProgressIndicator(color: Colors.orange))
           : _paymentHistory.isEmpty
-              ? _buildEmptyState()
-              : RefreshIndicator(
-                  onRefresh: _loadPaymentHistory,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _paymentHistory.length,
-                    itemBuilder: (context, index) {
-                      final payment = _paymentHistory[index];
-                      return _buildPaymentItem(payment);
-                    },
-                  ),
-                ),
+          ? _buildEmptyState()
+          : RefreshIndicator(
+              onRefresh: _loadPaymentHistory,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _paymentHistory.length,
+                itemBuilder: (context, index) {
+                  final payment = _paymentHistory[index];
+                  return _buildPaymentItem(payment);
+                },
+              ),
+            ),
     );
   }
 
@@ -163,18 +159,12 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           const SizedBox(height: 16),
           Text(
             '결제 내역이 없습니다',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 8),
           Text(
             '상품을 구매하면 여기에 표시됩니다',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -184,9 +174,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   Widget _buildPaymentItem(Map<String, dynamic> payment) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -237,10 +225,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                 const SizedBox(width: 8),
                 Text(
                   payment['paymentMethod'],
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
                 const Spacer(),
                 Text(
@@ -260,18 +245,12 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               children: [
                 Text(
                   payment['approvedAt'],
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade500,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                 ),
                 const Spacer(),
                 Text(
                   '주문번호: ${payment['orderId']}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade500,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                 ),
               ],
             ),
@@ -357,9 +336,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               ),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );
@@ -380,7 +357,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                
+
                 // 환불 처리
                 final success = await _paymentService.cancelPayment(
                   payment['paymentKey'],

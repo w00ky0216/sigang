@@ -82,21 +82,18 @@ class _RegularShopPageState extends State<RegularShopPage> {
           // 단골 상점 통계
           _buildRegularShopStats(),
           const SizedBox(height: 20),
-          
+
           // 단골 등급 안내
           _buildLoyaltyLevelInfo(),
           const SizedBox(height: 20),
-          
+
           // 단골 상점 목록
           const Text(
             '나의 단골 상점',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          
+
           ...regularShops.map((shop) => _buildRegularShopCard(shop)).toList(),
         ],
       ),
@@ -104,9 +101,20 @@ class _RegularShopPageState extends State<RegularShopPage> {
   }
 
   Widget _buildRegularShopStats() {
-    final totalVisits = regularShops.fold<int>(0, (sum, shop) => sum + (shop['visitCount'] as int));
-    final totalSpent = regularShops.fold<int>(0, (sum, shop) => sum + (shop['totalSpent'] as int));
-    final avgRating = regularShops.fold<double>(0.0, (sum, shop) => sum + (shop['rating'] as double)) / regularShops.length;
+    final totalVisits = regularShops.fold<int>(
+      0,
+      (sum, shop) => sum + (shop['visitCount'] as int),
+    );
+    final totalSpent = regularShops.fold<int>(
+      0,
+      (sum, shop) => sum + (shop['totalSpent'] as int),
+    );
+    final avgRating =
+        regularShops.fold<double>(
+          0.0,
+          (sum, shop) => sum + (shop['rating'] as double),
+        ) /
+        regularShops.length;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -174,13 +182,7 @@ class _RegularShopPageState extends State<RegularShopPage> {
             color: Colors.orange.shade700,
           ),
         ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-          ),
-        ),
+        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
       ],
     );
   }
@@ -203,17 +205,11 @@ class _RegularShopPageState extends State<RegularShopPage> {
               children: [
                 Text(
                   'VIP 단골 고객',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '단골 상점에서 추가 혜택을 받으실 수 있습니다',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),
@@ -228,9 +224,7 @@ class _RegularShopPageState extends State<RegularShopPage> {
       margin: const EdgeInsets.only(bottom: 16),
       child: Card(
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -245,14 +239,10 @@ class _RegularShopPageState extends State<RegularShopPage> {
                       color: shop['color'].withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
-                      shop['icon'],
-                      color: shop['color'],
-                      size: 30,
-                    ),
+                    child: Icon(shop['icon'], color: shop['color'], size: 30),
                   ),
                   const SizedBox(width: 16),
-                  
+
                   // 상점 정보
                   Expanded(
                     child: Column(
@@ -291,7 +281,11 @@ class _RegularShopPageState extends State<RegularShopPage> {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.star, color: Colors.amber, size: 16),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 16,
+                            ),
                             Text(
                               ' ${shop['rating']}',
                               style: const TextStyle(fontSize: 14),
@@ -309,7 +303,7 @@ class _RegularShopPageState extends State<RegularShopPage> {
                       ],
                     ),
                   ),
-                  
+
                   // 단골 할인 뱃지
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -332,7 +326,7 @@ class _RegularShopPageState extends State<RegularShopPage> {
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               // 상세 정보
               Container(
                 padding: const EdgeInsets.all(12),
@@ -364,8 +358,11 @@ class _RegularShopPageState extends State<RegularShopPage> {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.local_offer, 
-                          color: Colors.orange.shade600, size: 16),
+                        Icon(
+                          Icons.local_offer,
+                          color: Colors.orange.shade600,
+                          size: 16,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           shop['discount'],
@@ -381,7 +378,7 @@ class _RegularShopPageState extends State<RegularShopPage> {
                 ),
               ),
               const SizedBox(height: 12),
-              
+
               // 액션 버튼들
               Row(
                 children: [

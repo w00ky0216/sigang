@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'favorite_page.dart';
 
 class ShopPage extends StatefulWidget {
@@ -12,6 +14,9 @@ class _ShopPageState extends State<ShopPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String selectedCategory = '전체';
+  Map<String, String>? selectedShop; // Track selected shop for details view
+  Set<String> favoriteShops = {}; // Track favorite shops by name
+  bool isLoadingFavorites = true;
 
   // 카테고리별 상점 데이터
   final Map<String, List<Map<String, String>>> categoryShops = {
@@ -120,6 +125,57 @@ class _ShopPageState extends State<ShopPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _loadFavorites();
+  }
+
+  // Load favorites from shared preferences
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final favoritesJson = prefs.getString('favorite_shops');
+    if (favoritesJson != null) {
+      final List<dynamic> favoritesList = jsonDecode(favoritesJson);
+      setState(() {
+        favoriteShops = favoritesList.map((e) => e.toString()).toSet();
+        isLoadingFavorites = false;
+      });
+    } else {
+      setState(() {
+        isLoadingFavorites = false;
+      });
+    }
+  }
+
+  // Save favorites to shared preferences
+  Future<void> _saveFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final favoritesJson = jsonEncode(favoriteShops.toList());
+    await prefs.setString('favorite_shops', favoritesJson);
+  }
+
+  // Toggle favorite status
+  Future<void> _toggleFavorite(String shopName) async {
+    setState(() {
+      if (favoriteShops.contains(shopName)) {
+        favoriteShops.remove(shopName);
+      } else {
+        favoriteShops.add(shopName);
+      }
+    });
+    await _saveFavorites();
+  }
+
+  // Check if shop is favorite
+  bool _isFavorite(String shopName) {
+    return favoriteShops.contains(shopName);
+  }
+
+  // Get all shops from all categories
+  List<Map<String, String>> _getAllShops() {
+    List<Map<String, String>> allShops = [];
+    categoryShops.values.forEach((shops) {
+      allShops.addAll(shops);
+    });
+    return allShops;
   }
 
   @override
@@ -130,6 +186,12 @@ class _ShopPageState extends State<ShopPage>
 
   @override
   Widget build(BuildContext context) {
+    // If a shop is selected, show details view
+    if (selectedShop != null) {
+      return _buildShopDetailsView();
+    }
+
+    // Otherwise show the shop list
     return Column(
       children: [
         // 탭바
@@ -153,7 +215,31 @@ class _ShopPageState extends State<ShopPage>
             controller: _tabController,
             children: [
               _buildAllShopsTab(),
-              const FavoritePage(), // 기존 찜 페이지 재사용
+              FavoritePage(
+                favoriteShopNames: favoriteShops,
+                allShops: _getAllShops(),
+                onToggleFavorite: (shopName) async {
+                  await _toggleFavorite(shopName);
+                  final isFav = _isFavorite(shopName);
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          isFav
+                              ? '$shopName 찜 목록에 추가되었습니다'
+                              : '$shopName 찜 목록에서 제거되었습니다',
+                        ),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
+                onShopTap: (shop) {
+                  setState(() {
+                    selectedShop = shop;
+                  });
+                },
+              ),
             ],
           ),
         ),
@@ -263,18 +349,52 @@ class _ShopPageState extends State<ShopPage>
     String items,
     String phone,
   ) {
+    final isFav = _isFavorite(name);
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.orange.shade100,
-          child: Icon(
-            Icons.storefront,
-            color: Colors.orange.shade700,
-            size: 24,
-          ),
+        leading: Stack(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.orange.shade100,
+              child: Icon(
+                Icons.storefront,
+                color: Colors.orange.shade700,
+                size: 24,
+              ),
+            ),
+            if (isFav)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.favorite,
+                    size: 12,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+          ],
         ),
-        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            if (isFav)
+              Icon(Icons.favorite, size: 16, color: Colors.red.shade400),
+          ],
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -283,10 +403,7 @@ class _ShopPageState extends State<ShopPage>
             if (phone.isNotEmpty) Text('연락처: $phone'),
             const SizedBox(height: 4),
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 2,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(12),
@@ -297,9 +414,214 @@ class _ShopPageState extends State<ShopPage>
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 14),
         onTap: () {
-          // 상점 상세 페이지로 이동
+          // Show shop details in the same page
+          setState(() {
+            selectedShop = {
+              'name': name,
+              'location': location,
+              'category': category,
+              'items': items,
+              'phone': phone,
+            };
+          });
         },
       ),
+    );
+  }
+
+  Widget _buildShopDetailsView() {
+    final shop = selectedShop!;
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Back button
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() {
+                      selectedShop = null;
+                    });
+                  },
+                ),
+                const Text(
+                  '상점 상세정보',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+
+          // Shop details content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Shop icon and name
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade100,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.storefront,
+                          size: 50,
+                          color: Colors.orange.shade700,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        shop['name']!,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade100,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Text(
+                          shop['category']!,
+                          style: TextStyle(
+                            color: Colors.orange.shade700,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                // Shop information
+                _buildDetailRow(Icons.location_on, '호수', shop['location']!),
+                const SizedBox(height: 16),
+                _buildDetailRow(Icons.shopping_basket, '취급품목', shop['items']!),
+                if (shop['phone']!.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  _buildDetailRow(Icons.phone, '연락처', shop['phone']!),
+                ],
+
+                const SizedBox(height: 32),
+
+                // Action buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          await _toggleFavorite(shop['name']!);
+                          final isFav = _isFavorite(shop['name']!);
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  isFav
+                                      ? '${shop['name']} 찜 목록에 추가되었습니다'
+                                      : '${shop['name']} 찜 목록에서 제거되었습니다',
+                                ),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                        icon: Icon(
+                          _isFavorite(shop['name']!)
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                        ),
+                        label: Text(
+                          _isFavorite(shop['name']!) ? '찜 해제' : '찜하기',
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _isFavorite(shop['name']!)
+                              ? Colors.red
+                              : Colors.orange,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          if (shop['phone']!.isNotEmpty) {
+                            // Call phone logic (would need url_launcher package)
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('전화 걸기: ${shop['phone']}'),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.call),
+                        label: const Text('전화하기'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.orange,
+                          side: const BorderSide(color: Colors.orange),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: Colors.orange, size: 24),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -14,7 +14,7 @@ class _VoiceDialogState extends State<VoiceDialog>
   final VoiceService _voiceService = VoiceService();
   late AnimationController _pulseController;
   late AnimationController _waveController;
-  
+
   bool _isListening = false;
   String _recognizedText = "";
   String _aiResponse = "";
@@ -26,12 +26,12 @@ class _VoiceDialogState extends State<VoiceDialog>
       duration: const Duration(seconds: 1),
       vsync: this,
     )..repeat(reverse: true);
-    
+
     _waveController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     )..repeat();
-    
+
     _startListening();
   }
 
@@ -76,14 +76,22 @@ class _VoiceDialogState extends State<VoiceDialog>
 
   String _generateResponse(String input) {
     final lowerInput = input.toLowerCase();
-    
-    if (lowerInput.contains('한우') || lowerInput.contains('고기') || lowerInput.contains('정육')) {
+
+    if (lowerInput.contains('한우') ||
+        lowerInput.contains('고기') ||
+        lowerInput.contains('정육')) {
       return "🥩 형제정육점에서 신선한 한우를 판매하고 있어요!\n위치: 다59호\n취급품목: 육류\n연락처: 033-742-3228";
-    } else if (lowerInput.contains('김') || lowerInput.contains('수산') || lowerInput.contains('건어물')) {
+    } else if (lowerInput.contains('김') ||
+        lowerInput.contains('수산') ||
+        lowerInput.contains('건어물')) {
       return "🌊 금천김에서 최고급 김을 만나보세요!\n위치: 다62호\n취급품목: 김/부각/튀각/누룽지\n연락처: 033-735-6455";
-    } else if (lowerInput.contains('떡') || lowerInput.contains('베이커리') || lowerInput.contains('빵')) {
+    } else if (lowerInput.contains('떡') ||
+        lowerInput.contains('베이커리') ||
+        lowerInput.contains('빵')) {
       return "🍰 유성떡집의 신선한 떡을 추천드려요!\n위치: 가10호\n취급품목: 떡류\n연락처: 033-745-9950";
-    } else if (lowerInput.contains('분식') || lowerInput.contains('떡볶이') || lowerInput.contains('반찬')) {
+    } else if (lowerInput.contains('분식') ||
+        lowerInput.contains('떡볶이') ||
+        lowerInput.contains('반찬')) {
       return "🍲 부부분식에서 맛있는 분식을 즐겨보세요!\n위치: 다52호\n취급품목: 분식\n연락처: 033-732-7579";
     } else if (lowerInput.contains('추천')) {
       return "✨ 오늘의 추천 상품\n• 한우 등심 (형제정육점)\n• 김 선물세트 (금천김)\n• 백설기 (유성떡집)\n• 떡볶이 세트 (부부분식)";
@@ -159,7 +167,7 @@ class _VoiceDialogState extends State<VoiceDialog>
                             gradient: LinearGradient(
                               colors: [
                                 Colors.orange.shade400,
-                                Colors.orange.shade600
+                                Colors.orange.shade600,
                               ],
                             ),
                           ),
@@ -177,10 +185,7 @@ class _VoiceDialogState extends State<VoiceDialog>
               const SizedBox(height: 16),
               const Text(
                 '듣고 있습니다...',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             ] else if (_recognizedText.isNotEmpty) ...[
               // 인식된 텍스트
@@ -201,14 +206,11 @@ class _VoiceDialogState extends State<VoiceDialog>
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      _recognizedText,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    Text(_recognizedText, style: const TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
-              
+
               if (_aiResponse.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Container(
@@ -239,10 +241,7 @@ class _VoiceDialogState extends State<VoiceDialog>
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        _aiResponse,
-                        style: const TextStyle(fontSize: 14),
-                      ),
+                      Text(_aiResponse, style: const TextStyle(fontSize: 14)),
                     ],
                   ),
                 ),
@@ -260,9 +259,7 @@ class _VoiceDialogState extends State<VoiceDialog>
                     onPressed: _startListening,
                     icon: const Icon(Icons.refresh),
                     label: const Text('다시 듣기'),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.orange,
-                    ),
+                    style: TextButton.styleFrom(foregroundColor: Colors.orange),
                   ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),

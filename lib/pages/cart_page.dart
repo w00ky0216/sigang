@@ -71,7 +71,10 @@ class _CartPageState extends State<CartPage> {
   int get totalPrice {
     return cartItems
         .where((item) => item['isSelected'])
-        .fold(0, (sum, item) => sum + (item['price'] * item['quantity']) as int);
+        .fold(
+          0,
+          (sum, item) => sum + (item['price'] * item['quantity']) as int,
+        );
   }
 
   @override
@@ -84,35 +87,32 @@ class _CartPageState extends State<CartPage> {
         actions: [
           TextButton(
             onPressed: _clearCart,
-            child: const Text(
-              '전체삭제',
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text('전체삭제', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
-      body: cartItems.isEmpty 
-        ? _buildEmptyCart()
-        : Column(
-            children: [
-              // 전체 선택 체크박스
-              _buildSelectAllHeader(),
-              
-              // 장바구니 아이템 목록
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: cartItems.length,
-                  itemBuilder: (context, index) {
-                    return _buildCartItem(cartItems[index], index);
-                  },
+      body: cartItems.isEmpty
+          ? _buildEmptyCart()
+          : Column(
+              children: [
+                // 전체 선택 체크박스
+                _buildSelectAllHeader(),
+
+                // 장바구니 아이템 목록
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: cartItems.length,
+                    itemBuilder: (context, index) {
+                      return _buildCartItem(cartItems[index], index);
+                    },
+                  ),
                 ),
-              ),
-              
-              // 하단 주문 정보 및 결제 버튼
-              _buildBottomOrderInfo(),
-            ],
-          ),
+
+                // 하단 주문 정보 및 결제 버튼
+                _buildBottomOrderInfo(),
+              ],
+            ),
     );
   }
 
@@ -129,18 +129,12 @@ class _CartPageState extends State<CartPage> {
           const SizedBox(height: 16),
           Text(
             '장바구니가 비어있습니다',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 8),
           Text(
             '상점에서 상품을 담아보세요!',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -153,10 +147,7 @@ class _CartPageState extends State<CartPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
           ),
         ],
@@ -169,9 +160,7 @@ class _CartPageState extends State<CartPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200),
-        ),
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
       ),
       child: Row(
         children: [
@@ -188,18 +177,12 @@ class _CartPageState extends State<CartPage> {
           ),
           const Text(
             '전체선택',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
           const Spacer(),
           Text(
             '선택 $selectedItemsCount/${cartItems.length}개',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
           ),
         ],
       ),
@@ -211,9 +194,7 @@ class _CartPageState extends State<CartPage> {
       margin: const EdgeInsets.only(bottom: 8),
       child: Card(
         elevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -228,7 +209,7 @@ class _CartPageState extends State<CartPage> {
                 },
                 activeColor: Colors.orange,
               ),
-              
+
               // 상품 아이콘
               Container(
                 width: 50,
@@ -237,14 +218,10 @@ class _CartPageState extends State<CartPage> {
                   color: item['color'].withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  item['icon'],
-                  color: item['color'],
-                  size: 24,
-                ),
+                child: Icon(item['icon'], color: item['color'], size: 24),
               ),
               const SizedBox(width: 12),
-              
+
               // 상품 정보
               Expanded(
                 child: Column(
@@ -287,7 +264,7 @@ class _CartPageState extends State<CartPage> {
                   ],
                 ),
               ),
-              
+
               // 수량 조절 및 삭제
               Column(
                 children: [
@@ -342,7 +319,7 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // 삭제 버튼
                   InkWell(
                     onTap: () {
@@ -386,10 +363,7 @@ class _CartPageState extends State<CartPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                '선택 상품',
-                style: TextStyle(fontSize: 16),
-              ),
+              const Text('선택 상품', style: TextStyle(fontSize: 16)),
               Text(
                 '$selectedItemsCount개',
                 style: const TextStyle(
@@ -405,10 +379,7 @@ class _CartPageState extends State<CartPage> {
             children: [
               const Text(
                 '총 결제 금액',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
                 '${_formatPrice(totalPrice)}원',
@@ -421,7 +392,7 @@ class _CartPageState extends State<CartPage> {
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // 주문하기 버튼
           SizedBox(
             width: double.infinity,
@@ -436,9 +407,9 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               child: Text(
-                selectedItemsCount > 0 
-                  ? '${_formatPrice(totalPrice)}원 주문하기'
-                  : '상품을 선택해주세요',
+                selectedItemsCount > 0
+                    ? '${_formatPrice(totalPrice)}원 주문하기'
+                    : '상품을 선택해주세요',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -480,7 +451,7 @@ class _CartPageState extends State<CartPage> {
 
   void _clearCart() {
     if (cartItems.isEmpty) return;
-    
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -508,8 +479,10 @@ class _CartPageState extends State<CartPage> {
   }
 
   void _proceedToPayment() {
-    final selectedItems = cartItems.where((item) => item['isSelected']).toList();
-    
+    final selectedItems = cartItems
+        .where((item) => item['isSelected'])
+        .toList();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {

@@ -87,9 +87,21 @@ class _HomePageState extends State<HomePage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround, // 아이콘들을 균등하게 배치
       children: [
-        _buildMenuItem(Icons.card_giftcard, '쿠폰함', () => _navigateToCouponPage()),
-        _buildMenuItem(Icons.location_on, '시장 지도', () => _navigateToMarketMapPage()),
-        _buildMenuItem(Icons.store, '단골 상점', () => _navigateToRegularShopPage()),
+        _buildMenuItem(
+          Icons.card_giftcard,
+          '쿠폰함',
+          () => _navigateToCouponPage(),
+        ),
+        _buildMenuItem(
+          Icons.location_on,
+          '시장 지도',
+          () => _navigateToMarketMapPage(),
+        ),
+        _buildMenuItem(
+          Icons.store,
+          '단골 상점',
+          () => _navigateToRegularShopPage(),
+        ),
         _buildMenuItem(Icons.shopping_bag, '장바구니', () => _navigateToCartPage()),
       ],
     );
@@ -104,19 +116,12 @@ class _HomePageState extends State<HomePage> {
           CircleAvatar(
             radius: 28,
             backgroundColor: Colors.orange.shade100,
-            child: Icon(
-              icon,
-              color: Colors.orange.shade600,
-              size: 28,
-            ),
+            child: Icon(icon, color: Colors.orange.shade600, size: 28),
           ),
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -217,7 +222,9 @@ class _HomePageState extends State<HomePage> {
                       const Text('간편결제'),
                     ],
                   ),
-                  content: const Text('하단의 "결제" 탭에서\n여러 상품을 선택해서\n한번에 결제할 수 있어요!'),
+                  content: const Text(
+                    '하단의 "결제" 탭에서\n여러 상품을 선택해서\n한번에 결제할 수 있어요!',
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),

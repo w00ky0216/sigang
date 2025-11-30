@@ -9,7 +9,6 @@ class MarketMapPage extends StatefulWidget {
 }
 
 class _MarketMapPageState extends State<MarketMapPage> {
-
   void _showShopInfo() {
     showDialog(
       context: context,
@@ -54,17 +53,9 @@ class _MarketMapPageState extends State<MarketMapPage> {
         const SizedBox(width: 8),
         Text(
           '$label: ',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontSize: 14),
-          ),
-        ),
+        Expanded(child: Text(value, style: const TextStyle(fontSize: 14))),
       ],
     );
   }
