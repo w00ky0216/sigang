@@ -141,10 +141,10 @@ class _HomePageState extends State<HomePage> {
       child: ListView(
         scrollDirection: Axis.horizontal, // 가로로 스크롤되도록 설정
         children: [
-          _buildDealItem('assets/apple.jpg', '사과 1봉', '5000'),
-          _buildDealItem('assets/fish.jpg', '고등어 1손', '8000'),
-          _buildDealItem('assets/vegetable.jpg', '유기농 채소', '3500'),
-          _buildDealItem('assets/tteok.jpg', '꿀 백설기', '2000'),
+          _buildDealItem('assets/beef.jpg', '한우 등심', '45000'),
+          _buildDealItem('assets/seaweed.jpg', '김 선물세트', '15000'),
+          _buildDealItem('assets/ricecake.jpg', '백설기', '12000'),
+          _buildDealItem('assets/tteokbokki.jpg', '떡볶이 세트', '8000'),
           // 간편결제 안내 카드
           _buildPaymentGuideCard(),
         ],

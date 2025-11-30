@@ -33,8 +33,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       _paymentHistory = [
         {
           'orderId': 'order_1234567890',
-          'orderName': '사과 1봉',
-          'amount': 5000,
+          'orderName': '한우 등심 1kg',
+          'amount': 45000,
           'paymentMethod': '토스페이',
           'status': 'DONE',
           'approvedAt': '2025-10-12 14:30:00',
@@ -42,8 +42,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
         },
         {
           'orderId': 'order_1234567889',
-          'orderName': '고등어 1손',
-          'amount': 8000,
+          'orderName': '김 선물세트 2세트',
+          'amount': 30000,
           'paymentMethod': '카카오페이',
           'status': 'DONE',
           'approvedAt': '2025-10-11 16:15:00',
@@ -51,8 +51,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
         },
         {
           'orderId': 'order_1234567888',
-          'orderName': '유기농 채소',
-          'amount': 3500,
+          'orderName': '백설기',
+          'amount': 12000,
           'paymentMethod': '네이버페이',
           'status': 'CANCELLED',
           'approvedAt': '2025-10-10 10:20:00',
@@ -60,8 +60,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
         },
         {
           'orderId': 'order_1234567887',
-          'orderName': '꿀 백설기',
-          'amount': 2000,
+          'orderName': '떡볶이 세트 2인분',
+          'amount': 16000,
           'paymentMethod': '토스페이',
           'status': 'DONE',
           'approvedAt': '2025-10-09 13:45:00',

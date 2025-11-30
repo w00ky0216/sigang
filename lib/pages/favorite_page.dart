@@ -31,14 +31,15 @@ class FavoritePage extends StatelessWidget {
   Widget _buildFavoriteShopList() {
     return Column(
       children: [
-        _buildFavoriteShopItem('김씨네 과일가게', '4.5', '과일'),
-        _buildFavoriteShopItem('바다횟집', '4.7', '수산물'),
-        _buildFavoriteShopItem('할머니 떡집', '4.3', '떡집'),
+        _buildFavoriteShopItem('형제정육점', '다59', '축산물', '육류', '033-742-3228'),
+        _buildFavoriteShopItem('금천김', '다62', '수산/건어물', '김/부각/튀각/누룽지', '033-735-6455'),
+        _buildFavoriteShopItem('유성떡집', '가10', '떡/베이커리', '떡', '033-745-9950'),
+        _buildFavoriteShopItem('부부분식', '다52', '반찬/부식', '분식', '033-732-7579'),
       ],
     );
   }
 
-  Widget _buildFavoriteShopItem(String name, String rating, String category) {
+  Widget _buildFavoriteShopItem(String name, String location, String category, String items, String phone) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
       child: ListTile(
@@ -53,11 +54,13 @@ class FavoritePage extends StatelessWidget {
           name,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Row(
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.star, color: Colors.amber, size: 16),
-            Text(' $rating'),
-            const SizedBox(width: 10),
+            Text('호수: $location'),
+            Text('취급품목: $items'),
+            if (phone.isNotEmpty) Text('연락처: $phone'),
+            const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
@@ -84,9 +87,10 @@ class FavoritePage extends StatelessWidget {
   Widget _buildFavoriteProductList() {
     return Column(
       children: [
-        _buildFavoriteProductItem('사과 1봉', '5,000원', '김씨네 과일가게'),
-        _buildFavoriteProductItem('고등어 1손', '8,000원', '바다횟집'),
-        _buildFavoriteProductItem('꿀 백설기', '2,000원', '할머니 떡집'),
+        _buildFavoriteProductItem('한우 1kg', '45,000원', '형제정육점'),
+        _buildFavoriteProductItem('김 선물세트', '15,000원', '금천김'),
+        _buildFavoriteProductItem('백설기', '12,000원', '유성떡집'),
+        _buildFavoriteProductItem('떡볶이 세트', '8,000원', '부부분식'),
       ],
     );
   }
